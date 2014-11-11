@@ -17,7 +17,7 @@ composer require martha-ci/plugin-github
 
 The plugin must be enabled in your `system.local.php` file:
 
-```
+```php
 return [
 // ...
     'Plugins' => [
@@ -35,7 +35,7 @@ piece. See *Settings / Applications / Developer Applications* on GitHub.
 Once you have the Client ID and Client Secret, add them to the
 `system.local.php` file as configuration options for the plugin:
 
-```
+```php
 return [
 // ...
     'Plugins' => [
