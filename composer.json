@@ -1,0 +1,30 @@
+{
+    "name": "martha-ci/plugin-github",
+    "description": "GitHub support for Martha Continuous Integration Server",
+    "type": "library",
+    "keywords": ["martha", "continuous integration", "github"],
+    "homepage": "http://github.com/martha-ci",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Kristopher Wilson",
+            "email": "kristopherwilson@gmail.com",
+            "homepage": "http://kristopherwilson.com",
+            "role": "Developer"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Martha\\Plugin\\GitHub\\": ["src/"]
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~4.3",
+        "squizlabs/php_codesniffer": "~1.5"
+    },
+    "require": {
+        "php": ">=5.5",
+        "league/oauth2-client": "~0.4"
+    }
+}
+
