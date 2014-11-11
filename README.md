@@ -21,9 +21,7 @@ The plugin must be enabled in your `system.local.php` file:
 return [
 // ...
     'Plugins' => [
-        'Martha\Plugin\GitHub' => [
-
-        ]
+        'Martha\Plugin\GitHub' => []
     ]
 // ...
 ];
@@ -40,7 +38,8 @@ return [
 // ...
     'Plugins' => [
         'Martha\Plugin\GitHub' => [
-
+            'client_id' => 'XXX',
+            'client_secret' => 'XXX'
         ]
     ]
 // ...
