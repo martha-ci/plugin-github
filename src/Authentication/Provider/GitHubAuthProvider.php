@@ -6,8 +6,8 @@ use Github\Client;
 use League\OAuth2\Client\Provider\Github;
 use Martha\Core\Authentication\AuthenticationResult;
 use Martha\Core\Authentication\Provider\AbstractOAuth2Provider;
-use Martha\Core\Http\Request;
 use Martha\Core\Plugin\AbstractPlugin;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class GitHubAuthProvider
@@ -76,7 +76,7 @@ class GitHubAuthProvider extends AbstractOAuth2Provider
      */
     public function validateResult(Request $request)
     {
-        if (!$request->getGet('code')) {
+        if (!$request->get('code')) {
             return false;
         }
 
@@ -84,7 +84,7 @@ class GitHubAuthProvider extends AbstractOAuth2Provider
             $token = $this->provider->getAccessToken(
                 'authorization_code',
                 [
-                    'code' => $request->getGet('code')
+                    'code' => $request->get('code')
                 ]
             );
         } catch (\Exception $e) {
