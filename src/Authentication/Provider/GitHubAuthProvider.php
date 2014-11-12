@@ -5,7 +5,7 @@ namespace Martha\Plugin\GitHub\Authentication\Provider;
 use Github\Client;
 use League\OAuth2\Client\Provider\Github;
 use Martha\Core\Authentication\AuthenticationResult;
-use Martha\Core\Authentication\Provider\AbstractOAuth2Provider;
+use Martha\Core\Authentication\Provider\AbstractOAuthProvider;
 use Martha\Core\Plugin\AbstractPlugin;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
  * Class GitHubAuthProvider
  * @package Martha\Plugin\GitHub
  */
-class GitHubAuthProvider extends AbstractOAuth2Provider
+class GitHubAuthProvider extends AbstractOAuthProvider
 {
     /**
      * @var string
