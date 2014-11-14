@@ -42,7 +42,7 @@ class GitHubAuthProvider extends AbstractOAuthProvider
             'clientId' => $this->config['client_id'],
             'clientSecret' => $this->config['client_secret'],
             'redirectUri' => 'http://martha.local/login/oauth-callback/GitHub', // todo fixme
-            'scopes' => ['user', 'user:email', 'repo:status', 'write:repo_hook', 'write:public_key'],
+            'scopes' => ['user', 'user:email', 'repo', 'write:repo_hook', 'write:public_key'],
         ]);
     }
 

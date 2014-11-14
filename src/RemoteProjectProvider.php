@@ -3,6 +3,7 @@
 namespace Martha\Plugin\GitHub;
 
 use Github\Client;
+use Martha\Core\Domain\Entity\User;
 use Martha\Core\Plugin\RemoteProjectProvider\AbstractRemoteProjectProvider;
 
 /**
@@ -26,11 +27,12 @@ class RemoteProjectProvider extends AbstractRemoteProjectProvider
     /**
      * Get all available projects for the authenticated account, including organizations.
      *
+     * @param User $user
      * @return array
      */
-    public function getAvailableProjects()
+    public function getAvailableProjectsForUser(User $user)
     {
-        $api = $this->getApi();
+        $api = $this->getApi($user);
         // Get all repositories:
         $repositories = $api->me()->repositories();
 
@@ -57,30 +59,33 @@ class RemoteProjectProvider extends AbstractRemoteProjectProvider
     /**
      * Get information about a GitHub project. $identifier must be in the format of "owner/repo"
      *
+     * @param User $user
      * @param string $identifier
      * @return array
      */
-    public function getProjectInformation($identifier)
+    public function getProjectInformation(User $user, $identifier)
     {
         list($owner, $repo) = explode('/', $identifier);
-        $project = $this->getApi()->repository()->show($owner, $repo);
+        $project = $this->getApi($user)->repository()->show($owner, $repo);
 
         return [
             'name' => $identifier,
             'description' => $project['description'],
             'scm' => 'git',
-            'uri' => $project['clone_url']
+            'uri' => $project['private'] ? $project['ssh_url'] : $project['clone_url'],
+            'private' => $project['private']
         ];
     }
 
     /**
+     * @param User $user
      * @param int $projectId
      */
-    public function onProjectCreated($projectId)
+    public function onProjectCreated(User $user, $projectId)
     {
         list($owner, $repo) = explode('/', $projectId);
 
-        $this->getApi()->repositories()->hooks()->create(
+        $this->getApi($user)->repositories()->hooks()->create(
             $owner,
             $repo,
             [
@@ -101,18 +106,25 @@ class RemoteProjectProvider extends AbstractRemoteProjectProvider
     /**
      * Gets an instance of a configured GitHub API client and returns it.
      *
-     * @return Client
+     * @param User $user
+     * @return Client|false
      */
-    protected function getApi()
+    protected function getApi(User $user)
     {
         if ($this->apiClient) {
             return $this->apiClient;
         }
 
-        $config = $this->plugin->getConfig();
+        $token = $user->getTokenForService('GitHub');
+
+        if (!$token) {
+            return false;
+        }
+
+        $token = $token->get('access-token');
 
         $this->apiClient = new Client();
-        $this->apiClient->authenticate($config['access_token'], null, Client::AUTH_HTTP_TOKEN);
+        $this->apiClient->authenticate($token, null, Client::AUTH_HTTP_TOKEN);
 
         return $this->apiClient;
     }
