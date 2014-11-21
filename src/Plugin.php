@@ -3,7 +3,9 @@
 namespace Martha\Plugin\GitHub;
 
 use Github\Client;
+use Martha\Core\Authentication\Provider\AbstractProvider;
 use Martha\Core\Domain\Entity\Build;
+use Martha\Core\Domain\Entity\User;
 use Martha\Core\Domain\Repository\BuildRepositoryInterface;
 use Martha\Core\Domain\Repository\ProjectRepositoryInterface;
 use Martha\Core\Http\Request;
@@ -18,6 +20,11 @@ use Martha\Plugin\GitHub\WebHook\Strategy\HookStrategyFactory;
  */
 class Plugin extends AbstractPlugin
 {
+    /**
+     * @var string
+     */
+    protected $name = 'GitHub';
+
     /**
      * @var BuildRepositoryInterface
      */
@@ -69,6 +76,10 @@ class Plugin extends AbstractPlugin
             ->registerListener(
                 'build.complete',
                 [$this, 'onBuildComplete']
+            )
+            ->registerListener(
+                'user.created',
+                [$this, 'onUserCreated']
             );
 
         $this->getPluginManager()->registerAuthenticationProvider(
@@ -197,6 +208,24 @@ class Plugin extends AbstractPlugin
                     $this->commentOnPullRequest($owner, $repo, $number, $build);
                 }
             }
+        }
+    }
+
+    /**
+     * If a user was created from GitHub, add the newly generated SSH public key with GitHub.
+     *
+     * @param string $event
+     * @param User $user
+     * @param AbstractProvider $provider
+     * @throws \Github\Exception\MissingArgumentException
+     */
+    public function onUserCreated($event, User $user, AbstractProvider $provider = null)
+    {
+        if ($provider->getName() === $this->getName()) {
+            $this->getApi($user)->me()->keys()->create([
+                'title' => 'Martha CI Generated Key',
+                'key' => $user->getPublicKey()
+            ]);
         }
     }
 
