@@ -156,7 +156,7 @@ class Plugin extends AbstractPlugin
         if ($build->getMethod() == 'GitHub:WebHook') {
             list($owner, $repo) = explode('/', $project->getName());
 
-            $response = $this->getApi()->repositories()->statuses()->create(
+            $response = $this->getApi($build->getProject()->getCreatedBy())->repositories()->statuses()->create(
                 $owner,
                 $repo,
                 $build->getRevisionNumber(),
@@ -276,18 +276,19 @@ class Plugin extends AbstractPlugin
     /**
      * Gets an instance of a configured GitHub API client and returns it.
      *
+     * @param User $user
      * @return Client
      */
-    protected function getApi()
+    protected function getApi(User $user)
     {
         if ($this->apiClient) {
             return $this->apiClient;
         }
 
-        $config = $this->getConfig();
+        $token = $user->getTokenForService($this->name);
 
         $this->apiClient = new Client();
-        $this->apiClient->authenticate($config['access_token'], null, Client::AUTH_HTTP_TOKEN);
+        $this->apiClient->authenticate($token->get('access-token'), null, Client::AUTH_HTTP_TOKEN);
 
         return $this->apiClient;
     }
