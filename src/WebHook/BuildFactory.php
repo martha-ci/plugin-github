@@ -38,6 +38,14 @@ class BuildFactory
             ->set('triggered-by', 'GitHubHook:PullRequest')
             ->set('pull-request', $payload['number']);
 
+        $repo = $payload['pull_request']['head']['repo'];
+
+        if ($repo['private']) {
+            $build->setForkUri($repo['ssh_url']);
+        } else {
+            $build->setForkUri($repo['clone_url']);
+        }
+
         return $build;
     }
 
