@@ -3,6 +3,7 @@
 namespace Martha\Plugin\GitHub;
 
 use Github\Client;
+use Martha\Core\Domain\Entity\Project;
 use Martha\Core\Domain\Entity\User;
 use Martha\Core\Plugin\RemoteProjectProvider\AbstractRemoteProjectProvider;
 
@@ -78,14 +79,20 @@ class RemoteProjectProvider extends AbstractRemoteProjectProvider
     }
 
     /**
-     * @param User $user
-     * @param int $projectId
+     * @param Project $project
+     * @param int $projectType
+     * @throws \Github\Exception\MissingArgumentException
      */
-    public function onProjectCreated(User $user, $projectId)
+    public function onProjectCreated(Project $project, $projectType)
     {
-        list($owner, $repo) = explode('/', $projectId);
+        // Only handle projects created by this provider
+        if (strtolower($projectType) !== strtolower($this->plugin->getName())) {
+            return;
+        }
 
-        $this->getApi($user)->repositories()->hooks()->create(
+        list($owner, $repo) = explode('/', $project->getName());
+
+        $this->getApi($project->getCreatedBy())->repositories()->hooks()->create(
             $owner,
             $repo,
             [

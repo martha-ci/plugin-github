@@ -78,6 +78,10 @@ class Plugin extends AbstractPlugin
                 [$this, 'onBuildComplete']
             )
             ->registerListener(
+                'project.created',
+                ['Martha\Plugin\GitHub\RemoteProjectProvider', 'onProjectCreated']
+            )
+            ->registerListener(
                 'user.created',
                 [$this, 'onUserCreated']
             );
