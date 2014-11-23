@@ -41,7 +41,7 @@ class GitHubAuthProvider extends AbstractOAuthProvider
         $this->provider = new Github([
             'clientId' => $this->config['client_id'],
             'clientSecret' => $this->config['client_secret'],
-            'redirectUri' => 'http://martha.local/login/oauth-callback/GitHub', // todo fixme
+            'redirectUri' => $config['callback-url'],
             'scopes' => ['user', 'user:email', 'repo', 'write:repo_hook', 'write:public_key'],
         ]);
     }
