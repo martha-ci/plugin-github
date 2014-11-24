@@ -19,13 +19,14 @@
         }
     },
     "require-dev": {
-        "phpunit/phpunit": "~4.3",
-        "squizlabs/php_codesniffer": "~1.5"
+        "peridot-php/peridot": "~1.1",
+        "squizlabs/php_codesniffer": "~1.5",
+        "peridot-php/peridot-prophecy-plugin": "~1.0"
     },
     "require": {
         "php": ">=5.5",
+        "martha-ci/martha-core": "dev-master",
         "knplabs/github-api": "~1.3",
         "league/oauth2-client": "~0.4"
     }
 }
-

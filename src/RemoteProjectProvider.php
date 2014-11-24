@@ -79,9 +79,7 @@ class RemoteProjectProvider extends AbstractRemoteProjectProvider
     }
 
     /**
-     * @param Project $project
-     * @param int $projectType
-     * @throws \Github\Exception\MissingArgumentException
+     * {@inheritDoc}
      */
     public function onProjectCreated(Project $project, $projectType)
     {
