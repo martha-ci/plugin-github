@@ -57,10 +57,9 @@ class Plugin extends AbstractPlugin
         $this->buildRepository = $factory->createBuildRepository();
         $this->projectRepository = $factory->createProjectRepository();
 
-        $this->getPluginManager()->registerRemoteProjectProvider(
-            $this,
-            '\Martha\Plugin\GitHub\RemoteProjectProvider'
-        );
+        $provider = new RemoteProjectProvider($this);
+
+        $this->getPluginManager()->registerRemoteProjectProvider($provider);
 
         $this->getPluginManager()->registerHttpRouteHandler(
             'github-web-hook',
@@ -69,22 +68,10 @@ class Plugin extends AbstractPlugin
         );
 
         $this->getPluginManager()->getEventManager()
-            ->registerListener(
-                'build.started',
-                [$this, 'onBuildStart']
-            )
-            ->registerListener(
-                'build.complete',
-                [$this, 'onBuildComplete']
-            )
-            ->registerListener(
-                'project.created',
-                ['Martha\Plugin\GitHub\RemoteProjectProvider', 'onProjectCreated']
-            )
-            ->registerListener(
-                'user.created',
-                [$this, 'onUserCreated']
-            );
+            ->registerListener('build.started', [$this, 'onBuildStart'])
+            ->registerListener('build.complete', [$this, 'onBuildComplete'])
+            ->registerListener('project.created', [$provider, 'onProjectCreated'])
+            ->registerListener('user.created', [$this, 'onUserCreated']);
 
         $this->getPluginManager()->registerAuthenticationProvider(
             $this,
