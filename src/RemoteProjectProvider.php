@@ -81,7 +81,7 @@ class RemoteProjectProvider extends AbstractRemoteProjectProvider
     /**
      * {@inheritDoc}
      */
-    public function onProjectCreated(Project $project, $projectType)
+    public function onProjectCreated($event, Project $project, $projectType)
     {
         // Only handle projects created by this provider
         if (strtolower($projectType) !== strtolower($this->plugin->getName())) {
