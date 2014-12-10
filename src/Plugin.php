@@ -155,7 +155,8 @@ class Plugin extends AbstractPlugin
                     'state' => 'pending',
                     'description' => 'The Martha CI Build is pending',
                     'target_url' => $this->getPluginManager()->getSystem()->getSiteUrl() .
-                        '/build/view/' . $build->getId()
+                        '/build/view/' . $build->getId(),
+                    'context' => 'martha-ci:build'
                 ]
             );
 
